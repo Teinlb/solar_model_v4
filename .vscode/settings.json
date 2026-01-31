@@ -1,0 +1,11 @@
+{
+  "explorer.sortOrder": "filesFirst",
+  "explorer.compactFolders": false,
+  "explorer.fileNesting.enabled": true,
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.venv": true,
+    "node_modules": true,
+    "**/.vscode": true,
+  }
+}

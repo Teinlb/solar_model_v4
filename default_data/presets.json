@@ -1,0 +1,68 @@
+{
+  "drivecycle": [
+    {
+      "id": "cruising_speed",
+      "name": "Cruising Speed",
+      "type": "constant",
+      "description": "Eenvoudig constant snelheidsprofiel",
+      "speed_m_s": 20.0
+    },
+    {
+      "id": "wltp_cycle",
+      "name": "Wltp Cycle",
+      "type": "cycle",
+      "description": "Stadsprofiel met verschillende snelheden",
+      "ref": "drivecycles/WLTP.csv"
+    }
+  ],
+  "vehicle": [
+    {
+      "id": "lightyear_0",
+      "name": "Lightyear 0",
+      "values": {
+        "vehicle_mass_kg": 1575.0,
+        "frontal_area_m2": 2.0,
+        "drag_coefficient": 0.175,
+        "rolling_resistance": 0.008,
+        "battery_capacity_wh": 60000.0,
+        "panel_area_m2": 5.0,
+        "panel_efficiency": 0.22
+      }
+    },
+    {
+      "id": "stella_vie",
+      "name": "Stella Vie",
+      "values": {
+        "vehicle_mass_kg": 375.0,
+        "frontal_area_m2": 1.7,
+        "drag_coefficient": 0.11,
+        "rolling_resistance": 0.004,
+        "battery_capacity_wh": 15000.0,
+        "panel_area_m2": 5.0,
+        "panel_efficiency": 0.243
+      }
+    }
+  ],
+  "environment": [
+    {
+      "id": "standard_day",
+      "name": "Standard Day",
+      "values": {
+        "solar_irradiance_w_m2": 1000.0,
+        "ambient_temperature_c": 25.0,
+        "wind_speed_ms": 0.0,
+        "slope_deg": 0.0
+      }
+    },
+    {
+      "id": "cloudy",
+      "name": "Cloudy",
+      "values": {
+        "solar_irradiance_w_m2": 400.0,
+        "ambient_temperature_c": 20.0,
+        "wind_speed_ms": 2.0,
+        "slope_deg": 0.0
+      }
+    }
+  ]
+}
