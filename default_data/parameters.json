@@ -1,33 +1,320 @@
 {
   "car": {
-    "mass": {"default":1000.0,"constraints":{"min":50.0,"max":5000.0,"type":"float"},"ui":{"label":"Mass (kg)","widget":"input","info":"Total vehicle mass. Used in drag, rolling resistance, slope, and acceleration"}},
-    "frontal_area": {"default":2.0,"constraints":{"min":0.1,"max":10.0,"type":"float"},"ui":{"label":"Frontal area (m²)","widget":"input","info":"Vehicle cross-sectional area for aerodynamic drag"}},
-    "drag_coeff": {"default":0.2,"constraints":{"min":0.01,"max":1.0,"type":"float"},"ui":{"label":"Drag coefficient (Cd)","widget":"slider","info":"Aerodynamic drag coefficient"}},
-    "rolling_res": {"default":0.01,"constraints":{"min":0.001,"max":0.1,"type":"float"},"ui":{"label":"Rolling resistance (Cr)","widget":"slider","info":"Rolling resistance coefficient"}},
-    "target_speed": {"default":18,"constraints":{"min":0.0,"max":300.0,"type":"float"},"ui":{"label":"Target speed (km/h)","widget":"slider","info":"Desired cruising speed"}},
-    "battery_capacity": {"default":72000000.0,"constraints":{"min":36000000.0,"max":720000000.0,"type":"float"},"ui":{"label":"Battery capacity (J)","widget":"input","note":"20 kWh default","info":"Total energy storage in joules"}},
-    "battery_efficiency": {"default":0.95,"constraints":{"min":0.01,"max":1.0,"type":"float"},"ui":{"label":"Battery efficiency","widget":"slider","info":"Round-trip charging/discharging efficiency"}},
-    "available_capacity": {"default":100.0,"constraints":{"min":0.0,"max":100.0,"type":"float"},"ui":{"label":"Available capacity (%)","widget":"slider","info":"Usable fraction of total battery capacity"}},
-    "initial_charge": {"default":100.0,"constraints":{"min":0.0,"max":100.0,"type":"float"},"ui":{"label":"Initial charge (%)","widget":"slider","info":"Battery state of charge at simulation start"}},
-    "motor_efficiency": {"default":0.9,"constraints":{"min":0.01,"max":1.0,"type":"float"},"ui":{"label":"Motor efficiency","widget":"slider","info":"Drivetrain electrical to mechanical conversion efficiency"}},
-    "aux_power": {"default":200.0,"constraints":{"min":0.0,"max":10000.0,"type":"float"},"ui":{"label":"Aux power (W)","widget":"input","info":"Baseline consumption for lights, dashboard, telemetry"}},
-    "regen_efficiency": {"default":0.0,"constraints":{"min":0.0,"max":1.0,"type":"float"},"ui":{"label":"Regen efficiency","widget":"slider","info":"Energy recovery during braking"}},
-    "panel_area": {"default":5.0,"constraints":{"min":0.0,"max":50.0,"type":"float"},"ui":{"label":"Panel area (m²)","widget":"input","info":"Total solar panel surface area"}},
-    "panel_efficiency": {"default":0.22,"constraints":{"min":0.01,"max":1.0,"type":"float"},"ui":{"label":"Panel efficiency","widget":"slider","info":"Solar panel conversion efficiency"}},
-    "panel_temp_coeff": {"default":-0.003,"constraints":{"min":-0.05,"max":0.05,"type":"float"},"ui":{"label":"Panel temp coeff (%/°C)","widget":"input","info":"Panel efficiency change per degree Celsius"}}
+    "mass": {
+      "default": 1000,
+      "constraints": {
+        "min": 50,
+        "max": 5000,
+        "type": "float",
+        "read_only": 0
+      },
+      "ui": {
+        "label": "Mass (kg)",
+        "widget": "input",
+        "info": "Total vehicle mass. Used in drag, rolling resistance, slope, and acceleration"
+      }
+    },
+    "frontal_area": {
+      "default": 2,
+      "constraints": {
+        "min": 0.1,
+        "max": 10,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Frontal area (m\u00b2)",
+        "widget": "input",
+        "info": "Vehicle cross-sectional area for aerodynamic drag"
+      }
+    },
+    "drag_coeff": {
+      "default": 0.2,
+      "constraints": {
+        "min": 0.01,
+        "max": 1,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Drag coefficient (Cd)",
+        "widget": "slider",
+        "info": "Aerodynamic drag coefficient"
+      }
+    },
+    "rolling_res": {
+      "default": 0.01,
+      "constraints": {
+        "min": 0.001,
+        "max": 0.1,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Rolling resistance (Cr)",
+        "widget": "slider",
+        "info": "Rolling resistance coefficient"
+      }
+    },
+    "target_speed": {
+      "default": 18,
+      "constraints": {
+        "min": 0,
+        "max": 300,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Target speed (km/h)",
+        "widget": "slider",
+        "info": "Desired cruising speed"
+      }
+    },
+    "battery_capacity": {
+      "default": 72000000,
+      "constraints": {
+        "min": 36000000,
+        "max": 720000000,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Battery capacity (J)",
+        "widget": "input",
+        "note": "20 kWh default",
+        "info": "Total energy storage in joules"
+      }
+    },
+    "battery_efficiency": {
+      "default": 0.95,
+      "constraints": {
+        "min": 0.01,
+        "max": 1,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Battery efficiency",
+        "widget": "slider",
+        "info": "Round-trip charging/discharging efficiency"
+      }
+    },
+    "available_capacity": {
+      "default": 100,
+      "constraints": {
+        "min": 0,
+        "max": 100,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Available capacity (%)",
+        "widget": "slider",
+        "info": "Usable fraction of total battery capacity"
+      }
+    },
+    "initial_charge": {
+      "default": 100,
+      "constraints": {
+        "min": 0,
+        "max": 100,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Initial charge (%)",
+        "widget": "slider",
+        "info": "Battery state of charge at simulation start"
+      }
+    },
+    "motor_efficiency": {
+      "default": 0.9,
+      "constraints": {
+        "min": 0.01,
+        "max": 1,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Motor efficiency",
+        "widget": "slider",
+        "info": "Drivetrain electrical to mechanical conversion efficiency"
+      }
+    },
+    "aux_power": {
+      "default": 200,
+      "constraints": {
+        "min": 0,
+        "max": 10000,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Aux power (W)",
+        "widget": "input",
+        "info": "Baseline consumption for lights, dashboard, telemetry"
+      }
+    },
+    "regen_efficiency": {
+      "default": 0,
+      "constraints": {
+        "min": 0,
+        "max": 1,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Regen efficiency",
+        "widget": "slider",
+        "info": "Energy recovery during braking"
+      }
+    },
+    "panel_area": {
+      "default": 5,
+      "constraints": {
+        "min": 0,
+        "max": 50,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Panel area (m\u00b2)",
+        "widget": "input",
+        "info": "Total solar panel surface area"
+      }
+    },
+    "panel_efficiency": {
+      "default": 0.22,
+      "constraints": {
+        "min": 0.01,
+        "max": 1,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Panel efficiency",
+        "widget": "slider",
+        "info": "Solar panel conversion efficiency"
+      }
+    },
+    "panel_temp_coeff": {
+      "default": -0.003,
+      "constraints": {
+        "min": -0.05,
+        "max": 0.05,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Panel temp coeff (%/\u00b0C)",
+        "widget": "input",
+        "info": "Panel efficiency change per degree Celsius"
+      }
+    }
   },
   "env": {
-    "air_density": {"default":1.225,"constraints":{"min":0.8,"max":1.5,"type":"float"},"ui":{"label":"Air density (kg/m³)","widget":"input","info":"Atmospheric density. Affects drag and energy calculations"}},
-    "gravity": {"default":9.81,"constraints":{"read_only":true},"ui":{"label":"Gravity (m/s²)","note":"constant"}},
-    "temperature": {"default":25.0,"constraints":{"min":-50.0,"max":80.0,"type":"float"},"ui":{"label":"Temperature (°C)","widget":"slider","info":"Ambient temperature. Affects solar panel efficiency"}},
-    "wind_speed": {"default":0.0,"constraints":{"min":0.0,"max":60.0,"type":"float"},"ui":{"label":"Wind speed (m/s)","widget":"slider","info":"Wind velocity magnitude"}},
-    "wind_direction": {"default":0.0,"constraints":{"min":0.0,"max":360.0,"type":"float"},"ui":{"label":"Wind direction (°)","widget":"slider","info":"Wind direction in degrees"}},
-    "solar_irradiance": {"default":1000.0,"constraints":{"min":0.0,"max":1400.0,"type":"float"},"ui":{"label":"Solar irradiance (W/m²)","widget":"slider","info":"Incoming solar radiation intensity. Primary power generation input"}},
-    "slope": {"default":0.0,"constraints":{"min":-45.0,"max":45.0,"type":"float"},"ui":{"label":"Slope (°)","widget":"slider","info":"Road inclination angle"}}
+    "air_density": {
+      "default": 1.225,
+      "constraints": {
+        "min": 0.8,
+        "max": 1.5,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Air density (kg/m\u00b3)",
+        "widget": "input",
+        "info": "Atmospheric density. Affects drag and energy calculations"
+      }
+    },
+    "gravity": {
+      "default": 9.81,
+      "constraints": {
+        "read_only": true
+      },
+      "ui": {
+        "label": "Gravity (m/s\u00b2)",
+        "note": "constant"
+      }
+    },
+    "temperature": {
+      "default": 25,
+      "constraints": {
+        "min": -50,
+        "max": 80,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Temperature (\u00b0C)",
+        "widget": "slider",
+        "info": "Ambient temperature. Affects solar panel efficiency"
+      }
+    },
+    "wind_speed": {
+      "default": 0,
+      "constraints": {
+        "min": 0,
+        "max": 60,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Wind speed (m/s)",
+        "widget": "slider",
+        "info": "Wind velocity magnitude"
+      }
+    },
+    "wind_direction": {
+      "default": 0,
+      "constraints": {
+        "min": 0,
+        "max": 360,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Wind direction (\u00b0)",
+        "widget": "slider",
+        "info": "Wind direction in degrees"
+      }
+    },
+    "solar_irradiance": {
+      "default": 1000,
+      "constraints": {
+        "min": 0,
+        "max": 1400,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Solar irradiance (W/m\u00b2)",
+        "widget": "slider",
+        "info": "Incoming solar radiation intensity. Primary power generation input"
+      }
+    },
+    "slope": {
+      "default": 0,
+      "constraints": {
+        "min": -45,
+        "max": 45,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Slope (\u00b0)",
+        "widget": "slider",
+        "info": "Road inclination angle"
+      }
+    }
   },
   "sim": {
-    "time_step": {"default":1.0,"constraints":{"min":0.01,"max":10.0,"type":"float"},"ui":{"label":"Time step (s)","widget":"slider","info":"Interval for simulation calculations"}},
-    "duration": {"default":86400,"constraints":{"min":3600,"max":604800,"type":"float"},"ui":{"label":"Duration (s)","widget":"input","note":"1-7 days","info":"Total simulation duration in seconds"}}
+    "duration": {
+      "default": 86400,
+      "constraints": {
+        "min": 3600,
+        "max": 604800,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Duration (s)",
+        "widget": "input",
+        "note": "1-7 days",
+        "info": "Total simulation duration in seconds"
+      }
+    },
+    "time_step": {
+      "default": 1,
+      "constraints": {
+        "min": 0.01,
+        "max": 10,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Time step (s)",
+        "widget": "slider",
+        "info": "Interval for simulation calculations"
+      }
+    }
   }
 }
-  

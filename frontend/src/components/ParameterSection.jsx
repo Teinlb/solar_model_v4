@@ -4,6 +4,10 @@ export default function ParameterSection({
     config,
     formData,
     onChange,
+    presets,
+    presetCategory,
+    selectedPreset,
+    onPresetSelect,
 }) {
     const getFieldKey = (key) => {
         const mapping = {
@@ -36,26 +40,83 @@ export default function ParameterSection({
     };
 
     return (
-        <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-700 mb-4">
+        <div>
+            <h3 className="text-sm font-semibold text-slate-900 mb-4">
                 {title}
             </h3>
+
+            {/* Preset Buttons */}
+            {presets && onPresetSelect && (
+                <div className="mb-4 pb-4 border-b border-slate-200">
+                    <p className="text-xs font-medium text-slate-600 mb-2 uppercase tracking-wide">
+                        Quick Presets
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                        {presets?.map((preset) => (
+                            <button
+                                key={preset.id}
+                                type="button"
+                                onClick={() =>
+                                    onPresetSelect(presetCategory, preset.id)
+                                }
+                                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                                    selectedPreset === preset.id
+                                        ? "bg-blue-600 text-white border border-blue-600"
+                                        : "bg-slate-50 text-slate-900 border border-slate-200 hover:border-blue-400 hover:bg-blue-50"
+                                }`}
+                            >
+                                {preset.name}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
             <div className="space-y-4">
-                {Object.entries(config).map(([key, meta]) => {
+                {Object.entries(config || {}).map(([key, meta]) => {
                     const fieldKey = getFieldKey(key);
                     const value = formData?.[key] ?? meta.default ?? "";
-                    const isReadOnly = meta.constraints?.read_only;
+                    const widgetType = meta.ui?.widget || "input";
+
+                    // Skip if hidden
+                    if (widgetType === "hidden") {
+                        return null;
+                    }
+
+                    // Render read-only widget
+                    if (widgetType === "read_only") {
+                        return (
+                            <div key={key}>
+                                <label
+                                    htmlFor={`${section}-${key}`}
+                                    className="block text-xs font-medium text-slate-700 mb-2"
+                                >
+                                    {meta.ui?.label}
+                                </label>
+                                <div className="px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-600 font-medium">
+                                    {typeof value === "number"
+                                        ? value.toFixed(2)
+                                        : value}
+                                </div>
+                                {meta.ui?.info && (
+                                    <p className="text-xs text-slate-500 mt-1">
+                                        {meta.ui.info}
+                                    </p>
+                                )}
+                            </div>
+                        );
+                    }
 
                     return (
                         <div key={key}>
                             <label
                                 htmlFor={`${section}-${key}`}
-                                className="block text-xs font-medium text-gray-600 mb-1"
+                                className="block text-xs font-medium text-slate-700 mb-2"
                             >
                                 {meta.ui?.label}
                             </label>
-                            {meta.ui?.widget === "slider" && !isReadOnly ? (
-                                <div className="flex gap-2 items-center">
+                            {widgetType === "slider" ? (
+                                <div className="flex gap-3 items-center">
                                     <input
                                         id={`${section}-${key}`}
                                         type="range"
@@ -74,11 +135,11 @@ export default function ParameterSection({
                                                 e.target.value,
                                             )
                                         }
-                                        className="flex-1"
+                                        className="flex-1 accent-blue-600"
                                     />
-                                    <span className="text-xs text-gray-500 w-12 text-right">
+                                    <span className="text-xs text-slate-600 w-16 text-right font-medium">
                                         {typeof value === "number"
-                                            ? value.toFixed(3)
+                                            ? value.toFixed(2)
                                             : value}
                                     </span>
                                 </div>
@@ -91,12 +152,11 @@ export default function ParameterSection({
                                     onChange={(e) =>
                                         onChange(section, key, e.target.value)
                                     }
-                                    disabled={isReadOnly}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                             )}
                             {meta.ui?.info && (
-                                <p className="text-xs text-gray-500 mt-1">
+                                <p className="text-xs text-slate-500 mt-1">
                                     {meta.ui.info}
                                 </p>
                             )}

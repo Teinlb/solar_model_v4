@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.1] - 2026-01-31
+
+### Added
+
+- Optimized frontend and added a settingspanel
+
 ## [4.0] - 2026-01-31
 
 ### Changed

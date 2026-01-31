@@ -4,10 +4,26 @@ import ParameterSection from "./ParameterSection";
 export default function SimulationForm({ config, presets, onSubmit }) {
     const [formData, setFormData] = useState({ car: {}, env: {}, sim: {} });
     const [loading, setLoading] = useState(false);
+    const [selectedPresets, setSelectedPresets] = useState({
+        vehicle: null,
+        environment: null,
+        drivecycle: null,
+    });
 
     const handlePresetSelect = (category, presetId) => {
         const preset = presets[category]?.find((p) => p.id === presetId);
         if (!preset) return;
+
+        setSelectedPresets((prev) => ({ ...prev, [category]: presetId }));
+
+        // Map category names to section names in formData
+        const sectionMap = {
+            vehicle: "car",
+            environment: "env",
+            drivecycle: "sim",
+        };
+
+        const section = sectionMap[category] || category;
 
         if (category === "drivecycle") {
             setFormData((prev) => ({
@@ -17,7 +33,7 @@ export default function SimulationForm({ config, presets, onSubmit }) {
         } else {
             setFormData((prev) => ({
                 ...prev,
-                [category]: { ...prev[category], ...preset.values },
+                [section]: { ...prev[section], ...preset.values },
             }));
         }
     };
@@ -52,113 +68,64 @@ export default function SimulationForm({ config, presets, onSubmit }) {
     };
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="bg-white rounded-lg shadow p-6"
-        >
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">
-                Configuration
-            </h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Parameter Sections with Presets */}
+            <div className="bg-white border border-slate-200 rounded-lg p-6">
+                <ParameterSection
+                    title="Vehicle Parameters"
+                    section="car"
+                    config={config.car}
+                    formData={formData.car}
+                    onChange={handleParameterChange}
+                    presets={presets?.vehicle}
+                    presetCategory="vehicle"
+                    selectedPreset={selectedPresets.vehicle}
+                    onPresetSelect={handlePresetSelect}
+                />
+            </div>
 
-            {/* Presets */}
-            {presets && (
-                <div className="mb-8">
-                    <div className="mb-6">
-                        <h3 className="text-sm font-semibold text-gray-700 mb-3">
-                            Vehicle Presets
-                        </h3>
-                        <select
-                            onChange={(e) =>
-                                handlePresetSelect("vehicle", e.target.value)
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            defaultValue=""
-                        >
-                            <option value="">Choose a vehicle...</option>
-                            {presets.vehicle?.map((p) => (
-                                <option key={p.id} value={p.id}>
-                                    {p.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+            <div className="bg-white border border-slate-200 rounded-lg p-6">
+                <ParameterSection
+                    title="Environment Parameters"
+                    section="env"
+                    config={config.env}
+                    formData={formData.env}
+                    onChange={handleParameterChange}
+                    presets={presets?.environment}
+                    presetCategory="environment"
+                    selectedPreset={selectedPresets.environment}
+                    onPresetSelect={handlePresetSelect}
+                />
+            </div>
 
-                    <div className="mb-6">
-                        <h3 className="text-sm font-semibold text-gray-700 mb-3">
-                            Environment Presets
-                        </h3>
-                        <select
-                            onChange={(e) =>
-                                handlePresetSelect(
-                                    "environment",
-                                    e.target.value,
-                                )
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            defaultValue=""
-                        >
-                            <option value="">Choose an environment...</option>
-                            {presets.environment?.map((p) => (
-                                <option key={p.id} value={p.id}>
-                                    {p.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+            <div className="bg-white border border-slate-200 rounded-lg p-6">
+                <ParameterSection
+                    title="Simulation Parameters"
+                    section="sim"
+                    config={config.sim}
+                    formData={formData.sim}
+                    onChange={handleParameterChange}
+                />
+            </div>
 
-                    <div className="mb-6">
-                        <h3 className="text-sm font-semibold text-gray-700 mb-3">
-                            Drive Cycle
-                        </h3>
-                        <select
-                            onChange={(e) =>
-                                handlePresetSelect("drivecycle", e.target.value)
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            defaultValue=""
-                        >
-                            <option value="">Choose a drive cycle...</option>
-                            {presets.drivecycle?.map((p) => (
-                                <option key={p.id} value={p.id}>
-                                    {p.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-            )}
-
-            <hr className="my-6" />
-
-            {/* Parameter Sections */}
-            <ParameterSection
-                title="Vehicle Parameters"
-                section="car"
-                config={config.car}
-                formData={formData.car}
-                onChange={handleParameterChange}
-            />
-
-            <ParameterSection
-                title="Environment Parameters"
-                section="env"
-                config={config.env}
-                formData={formData.env}
-                onChange={handleParameterChange}
-            />
-
-            <ParameterSection
-                title="Simulation Parameters"
-                section="sim"
-                config={config.sim}
-                formData={formData.sim}
-                onChange={handleParameterChange}
-            />
+            <div className="bg-white border border-slate-200 rounded-lg p-6">
+                <ParameterSection
+                    title="Drive Cycle"
+                    section="sim"
+                    config={{}}
+                    formData={formData.sim}
+                    onChange={handleParameterChange}
+                    presets={presets?.drivecycle}
+                    presetCategory="drivecycle"
+                    selectedPreset={selectedPresets.drivecycle}
+                    onPresetSelect={handlePresetSelect}
+                />
+            </div>
 
             <button
                 type="submit"
                 disabled={loading}
-                className="w-full mt-8 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition"
+                className="sticky bottom-6 w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition shadow-lg"
             >
                 {loading ? "Running..." : "Run Simulation"}
             </button>

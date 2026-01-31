@@ -43,11 +43,14 @@ export default function ResultsPanel({ results }) {
             {/* Summary Stats */}
             <div className="grid grid-cols-2 gap-4">
                 {stats.map((stat, idx) => (
-                    <div key={idx} className="bg-white rounded-lg shadow p-4">
-                        <p className="text-xs text-gray-600 mb-1">
+                    <div
+                        key={idx}
+                        className="bg-white border border-slate-200 rounded-lg p-4"
+                    >
+                        <p className="text-xs text-slate-600 mb-1">
                             {stat.label}
                         </p>
-                        <p className="text-lg font-semibold text-gray-900">
+                        <p className="text-lg font-semibold text-slate-900">
                             {stat.value}
                         </p>
                     </div>
@@ -57,8 +60,8 @@ export default function ResultsPanel({ results }) {
             {/* Charts */}
             {chartData.labels.length > 0 && (
                 <>
-                    <div className="bg-white rounded-lg shadow p-4">
-                        <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                    <div className="bg-white border border-slate-200 rounded-lg p-4">
+                        <h3 className="text-sm font-semibold text-slate-900 mb-4">
                             Distance Over Time
                         </h3>
                         <SimpleChart
@@ -68,8 +71,8 @@ export default function ResultsPanel({ results }) {
                         />
                     </div>
 
-                    <div className="bg-white rounded-lg shadow p-4">
-                        <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                    <div className="bg-white border border-slate-200 rounded-lg p-4">
+                        <h3 className="text-sm font-semibold text-slate-900 mb-4">
                             Energy Over Time
                         </h3>
                         <SimpleChart
@@ -79,8 +82,8 @@ export default function ResultsPanel({ results }) {
                         />
                     </div>
 
-                    <div className="bg-white rounded-lg shadow p-4">
-                        <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                    <div className="bg-white border border-slate-200 rounded-lg p-4">
+                        <h3 className="text-sm font-semibold text-slate-900 mb-4">
                             Velocity Over Time
                         </h3>
                         <SimpleChart
@@ -94,26 +97,26 @@ export default function ResultsPanel({ results }) {
 
             {/* Full History Data */}
             {history.length > 0 && (
-                <div className="bg-white rounded-lg shadow overflow-hidden">
-                    <div className="px-4 py-3 border-b border-gray-200">
-                        <h3 className="text-sm font-semibold text-gray-900">
+                <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+                    <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
+                        <h3 className="text-sm font-semibold text-slate-900">
                             Full History ({history.length} points)
                         </h3>
                     </div>
                     <div className="max-h-80 overflow-y-auto">
                         <table className="w-full text-xs">
-                            <thead className="sticky top-0 bg-gray-50 border-b border-gray-200">
+                            <thead className="sticky top-0 bg-slate-50 border-b border-slate-200">
                                 <tr>
-                                    <th className="px-4 py-2 text-left font-semibold text-gray-700">
+                                    <th className="px-4 py-2 text-left font-semibold text-slate-700">
                                         Time (h)
                                     </th>
-                                    <th className="px-4 py-2 text-right font-semibold text-gray-700">
+                                    <th className="px-4 py-2 text-right font-semibold text-slate-700">
                                         Distance (km)
                                     </th>
-                                    <th className="px-4 py-2 text-right font-semibold text-gray-700">
+                                    <th className="px-4 py-2 text-right font-semibold text-slate-700">
                                         Velocity (m/s)
                                     </th>
-                                    <th className="px-4 py-2 text-right font-semibold text-gray-700">
+                                    <th className="px-4 py-2 text-right font-semibold text-slate-700">
                                         Energy (MJ)
                                     </th>
                                 </tr>
@@ -125,7 +128,7 @@ export default function ResultsPanel({ results }) {
                                         className={
                                             idx % 2 === 0
                                                 ? "bg-white"
-                                                : "bg-gray-50"
+                                                : "bg-slate-50"
                                         }
                                     >
                                         <td className="px-4 py-2">

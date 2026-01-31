@@ -3,6 +3,10 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -16,6 +20,88 @@ input,
 select,
 textarea {
     font-family: inherit;
+}
+
+/* Slider styling */
+input[type="range"] {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(
+        to right,
+        rgb(226, 232, 240),
+        rgb(226, 232, 240)
+    );
+    outline: none;
+    -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgb(37, 99, 235);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: rgb(29, 78, 216);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgb(37, 99, 235);
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    background: rgb(29, 78, 216);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgb(248, 250, 252);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(203, 213, 225);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(148, 163, 184);
+}
+
+/* Focus styles */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 2px solid rgb(37, 99, 235);
+    outline-offset: 2px;
+}
+
+/* Transitions */
+button,
+input,
+select,
+a {
+    transition: all 0.2s ease;
 }
 
 /* Animation */
@@ -38,4 +124,9 @@ textarea {
     width: 100%;
     height: 300px;
     margin-bottom: 2rem;
+}
+
+/* Charts */
+svg {
+    overflow: visible;
 }

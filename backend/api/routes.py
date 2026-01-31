@@ -1,8 +1,15 @@
 """API routes for the solar car simulation."""
 from flask import Blueprint, jsonify, request
+from pathlib import Path
+import json
 from ..main import run_simulation, run_parameter_sweep
 
 api_bp = Blueprint('api', __name__)
+
+
+def get_data_dir():
+    """Get the default_data directory path."""
+    return Path(__file__).parent.parent.parent / "default_data"
 
 
 @api_bp.route('/simulate', methods=['POST'])
@@ -71,3 +78,37 @@ def sweep():
         return jsonify({"error": f"Invalid sweep config: {str(e)}"}), 400
     except Exception as e:
         return jsonify({"error": f"Sweep failed: {str(e)}"}), 500
+
+
+@api_bp.route('/save-presets', methods=['POST'])
+def save_presets():
+    """Save presets.json with updated data."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        presets_path = get_data_dir() / "presets.json"
+        with open(presets_path, 'w') as f:
+            json.dump(data, f, indent=2)
+        
+        return jsonify({"status": "success", "message": "Presets saved"})
+    except Exception as e:
+        return jsonify({"error": f"Failed to save presets: {str(e)}"}), 500
+
+
+@api_bp.route('/save-config', methods=['POST'])
+def save_config():
+    """Save parameters.json with updated data."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        params_path = get_data_dir() / "parameters.json"
+        with open(params_path, 'w') as f:
+            json.dump(data, f, indent=2)
+        
+        return jsonify({"status": "success", "message": "Parameters saved"})
+    except Exception as e:
+        return jsonify({"error": f"Failed to save parameters: {str(e)}"}), 500
