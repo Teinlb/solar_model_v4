@@ -18,7 +18,6 @@ class Simulation:
         print(f"Simulation initialized with config: {self.cfg}")
         
         # Initialize state (t=0)
-        # We start with the battery fully charged (Joules)
         self.state = SimState(
             time=0.0,
             distance=0.0,

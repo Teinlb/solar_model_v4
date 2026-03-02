@@ -33,6 +33,26 @@
             }
         }
     ],
+    "profile": [
+        {
+            "id": "cruising_speed",
+            "name": "Cruising Speed",
+            "description": "Constant speed profile",
+            "values": {
+                "type": "constant",
+                "target_speed": 20
+            }
+        },
+        {
+            "id": "wltp_cycle",
+            "name": "WLTP Cycle",
+            "description": "Urban cycle with variable speeds",
+            "values": {
+                "type": "cycle",
+                "ref": "drivecycles/WLTP.csv"
+            }
+        }
+    ],
     "environment": [
         {
             "id": "standard_day",
@@ -66,24 +86,6 @@
                 "wind_speed": 0,
                 "slope": 0
             }
-        }
-    ],
-    "drivecycle": [
-        {
-            "id": "cruising_speed",
-            "name": "Cruising Speed",
-            "description": "Constant speed profile",
-            "type": "constant",
-            "values": {
-                "target_speed": 20
-            }
-        },
-        {
-            "id": "wltp_cycle",
-            "name": "WLTP Cycle",
-            "description": "Urban cycle with variable speeds",
-            "type": "cycle",
-            "ref": "drivecycles/WLTP.csv"
         }
     ]
 }

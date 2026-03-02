@@ -185,6 +185,35 @@
       }
     }
   },
+  "profile": {
+    "type": {
+      "default": "cycle",
+      "constraints": {
+        "type": "string"
+      },
+      "ui": {
+        "widget": "hidden"
+      }
+    },
+    "target_speed": {
+      "default": 1,
+      "constraints": {
+        "type": "string"
+      },
+      "ui": {
+        "widget": "hidden"
+      }
+    },
+    "ref": {
+      "default": "drivecycles/WLTP.csv",
+      "constraints": {
+        "type": "string"
+      },
+      "ui": {
+        "widget": "hidden"
+      }
+    }
+  },
   "env": {
     "air_density": {
       "default": 1.225,

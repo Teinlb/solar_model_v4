@@ -105,14 +105,14 @@ export default function SimulationForm({ config, presets, onSubmit }) {
                 <div className="space-y-2">
                     <div className="bg-white border border-slate-200 rounded-lg p-6">
                         <ParameterSection
-                            title="Drive Cycle"
-                            section="sim"
+                            title="Speed Profile"
+                            section="profile"
                             config={{}}
-                            formData={formData.sim}
+                            formData={formData.profile}
                             onChange={handleParameterChange}
-                            presets={presets?.drivecycle}
-                            presetCategory="drivecycle"
-                            selectedPreset={selectedPresets.drivecycle}
+                            presets={presets?.profile}
+                            presetCategory="profile"
+                            selectedPreset={selectedPresets.profile}
                             onPresetSelect={handlePresetSelect}
                         />
                     </div>
