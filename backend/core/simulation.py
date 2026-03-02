@@ -15,6 +15,7 @@ class Simulation:
         Initialize the simulator with a frozen configuration.
         """
         self.cfg = config
+        print(f"Simulation initialized with config: {self.cfg}")
         
         # Initialize state (t=0)
         # We start with the battery fully charged (Joules)
@@ -22,7 +23,7 @@ class Simulation:
             time=0.0,
             distance=0.0,
             velocity=config.car.target_speed,
-            energy=config.car.battery_capacity,
+            energy=config.car.battery_capacity * self.cfg.car.available_capacity / 100, # Start with available capacity
             last_power_demand=0.0,
             last_power_supply=0.0
         )
@@ -60,9 +61,11 @@ class Simulation:
                 env=env_cfg
             )
 
-            # power supply (W)
+            # power supply (W) - includes solar and regenerative braking
             power_in = calc_power_supply(
                 irradiance_w_m2=env_cfg.solar_irradiance,
+                speed_m_s=self.state.velocity,
+                acceleration_m_s2=0.0,  # Simple steady-state sim
                 car=car_cfg
             )
 
@@ -85,7 +88,6 @@ class Simulation:
             else:
                 # Check if battery is empty
                 if current_energy <= 0:
-                    print(f"Simulation stopped: Battery empty at t={self.state.time:.1f}s")
                     break # Stop simulation
                 else:
                     # Battery delivers power
@@ -103,4 +105,10 @@ class Simulation:
             # Record state snapshot
             self.history.append(copy.copy(self.state))
 
+        # Remove the last state if simulation ended with empty battery
+        if self.history and self.history[-1].energy <= 0:
+            self.history.pop()
+
+        print(f"Simulation stopped: t={self.state.time:.1f}s")
+        
         return self.history

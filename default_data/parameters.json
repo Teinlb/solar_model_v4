@@ -10,7 +10,7 @@
       },
       "ui": {
         "label": "Mass (kg)",
-        "widget": "input",
+        "widget": "hidden",
         "info": "Total vehicle mass. Used in drag, rolling resistance, slope, and acceleration"
       }
     },
@@ -106,19 +106,6 @@
         "info": "Usable fraction of total battery capacity"
       }
     },
-    "initial_charge": {
-      "default": 100,
-      "constraints": {
-        "min": 0,
-        "max": 100,
-        "type": "float"
-      },
-      "ui": {
-        "label": "Initial charge (%)",
-        "widget": "slider",
-        "info": "Battery state of charge at simulation start"
-      }
-    },
     "motor_efficiency": {
       "default": 0.9,
       "constraints": {
@@ -181,7 +168,7 @@
       "ui": {
         "label": "Panel efficiency",
         "widget": "slider",
-        "info": "Solar panel conversion efficiency"
+        "info": "Solar panel conversion efficiency."
       }
     },
     "panel_temp_coeff": {

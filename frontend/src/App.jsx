@@ -56,7 +56,7 @@ export default function App() {
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 flex flex-col">
             {/* Header */}
             <header className="bg-white border-b border-slate-200">
-                <div className="max-w-7xl mx-auto px-6 py-8 flex items-center justify-between">
+                <div className="max-w-screen-2xl mx-auto px-6 py-8 flex items-center justify-between">
                     <div>
                         <h1 className="text-4xl font-bold text-slate-900">
                             Solar Car Simulator
@@ -95,64 +95,65 @@ export default function App() {
 
             {/* Error */}
             {error && (
-                <div className="max-w-7xl mx-auto w-full px-6 mt-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                <div className="max-w-screen-2xl mx-auto w-full px-6 mt-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
                     {error}
                 </div>
             )}
 
             {/* Main Content */}
-            <main className="flex-1 w-full px-4 sm:px-6 py-6 sm:py-8">
+            <main className="relative flex-1 w-full px-2 sm:px-2 py-6 sm:py-2 mb-12">
+                {/* overlay is absolute; parent must be relative so it fills the
+                    same area as the form/results grid */}
                 {loading && <LoadingOverlay />}
-                {!loading && (
-                    <div className="max-w-7xl mx-auto">
-                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8">
-                            {/* Form Section - Takes 2 columns on large screens */}
-                            <div className="lg:col-span-2">
-                                <div className="sticky top-6">
-                                    <SimulationForm
-                                        config={config}
-                                        presets={presets}
-                                        onSubmit={runSimulation}
-                                    />
-                                </div>
-                            </div>
 
-                            {/* Results Section - Takes 3 columns on large screens */}
-                            <div className="lg:col-span-3">
-                                {results ? (
-                                    <ResultsPanel results={results} />
-                                ) : (
-                                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center min-h-96 flex items-center justify-center">
-                                        <div>
-                                            <div className="text-slate-400 mb-2">
-                                                <svg
-                                                    className="w-12 h-12 mx-auto"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={1.5}
-                                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                                                    />
-                                                </svg>
-                                            </div>
-                                            <p className="text-slate-600 font-medium">
-                                                Results will appear here
-                                            </p>
-                                            <p className="text-slate-500 text-sm mt-1">
-                                                Run a simulation to see analysis
-                                                and charts
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
+                <div className="max-w-screen-2xl mx-auto">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                        {/* Form Section - Left Column */}
+                        <div>
+                            <div className="sticky top-6">
+                                <SimulationForm
+                                    config={config}
+                                    presets={presets}
+                                    onSubmit={runSimulation}
+                                />
                             </div>
                         </div>
+
+                        {/* Results Section - Right Column */}
+                        <div>
+                            {results ? (
+                                <ResultsPanel results={results} />
+                            ) : (
+                                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center min-h-96 flex items-center justify-center">
+                                    <div>
+                                        <div className="text-slate-400 mb-2">
+                                            <svg
+                                                className="w-12 h-12 mx-auto"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={1.5}
+                                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                                                />
+                                            </svg>
+                                        </div>
+                                        <p className="text-slate-600 font-medium">
+                                            Results will appear here
+                                        </p>
+                                        <p className="text-slate-500 text-sm mt-1">
+                                            Run a simulation to see analysis and
+                                            charts
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                )}
+                </div>
             </main>
 
             {/* Settings Panel */}

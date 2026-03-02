@@ -1,89 +1,89 @@
 {
-  "vehicle": [
-    {
-      "id": "lightyear_0",
-      "name": "Lightyear 0",
-      "description": "Solar car with optimal aerodynamics",
-      "values": {
-        "mass": 1575,
-        "frontal_area": 2,
-        "drag_coeff": 0.175,
-        "rolling_res": 0.008,
-        "battery_capacity": 216000000,
-        "panel_area": 5,
-        "panel_efficiency": 0.22,
-        "battery_efficiency": 0.95,
-        "motor_efficiency": 0.9
-      }
-    },
-    {
-      "id": "stella_vie",
-      "name": "Stella Vie",
-      "description": "Ultra-lightweight solar vehicle",
-      "values": {
-        "mass": 375,
-        "frontal_area": 1.7,
-        "drag_coeff": 0.11,
-        "rolling_res": 0.004,
-        "battery_capacity": 54000000,
-        "panel_area": 5,
-        "panel_efficiency": 0.243,
-        "battery_efficiency": 0.95,
-        "motor_efficiency": 0.9
-      }
-    }
-  ],
-  "environment": [
-    {
-      "id": "standard_day",
-      "name": "Standard Day",
-      "description": "Ideal sunny conditions",
-      "values": {
-        "solar_irradiance": 1000,
-        "temperature": 25,
-        "wind_speed": 0,
-        "slope": 0
-      }
-    },
-    {
-      "id": "cloudy",
-      "name": "Cloudy",
-      "description": "Overcast conditions with light wind",
-      "values": {
-        "solar_irradiance": 400,
-        "temperature": 20,
-        "wind_speed": 2,
-        "slope": 0
-      }
-    },
-    {
-      "id": "hot_day",
-      "name": "Hot Day",
-      "description": "High temperature, full sun",
-      "values": {
-        "solar_irradiance": 1000,
-        "temperature": 35,
-        "wind_speed": 0,
-        "slope": 0
-      }
-    }
-  ],
-  "drivecycle": [
-    {
-      "id": "cruising_speed",
-      "name": "Cruising Speed",
-      "description": "Constant speed profile",
-      "type": "constant",
-      "values": {
-        "target_speed": 20
-      }
-    },
-    {
-      "id": "wltp_cycle",
-      "name": "WLTP Cycle",
-      "description": "Urban cycle with variable speeds",
-      "type": "cycle",
-      "ref": "drivecycles/WLTP.csv"
-    }
-  ]
+    "vehicle": [
+        {
+            "id": "lightyear_0",
+            "name": "Lightyear 0",
+            "description": "Solar car with optimal aerodynamics",
+            "values": {
+                "mass": 1575,
+                "frontal_area": 2,
+                "drag_coeff": 0.175,
+                "rolling_res": 0.008,
+                "battery_capacity": 216000000,
+                "panel_area": 5,
+                "panel_efficiency": 0.22,
+                "battery_efficiency": 0.95,
+                "motor_efficiency": 0.9
+            }
+        },
+        {
+            "id": "stella_vie",
+            "name": "Stella Vie",
+            "description": "Ultra-lightweight solar vehicle",
+            "values": {
+                "mass": 375,
+                "frontal_area": 1.7,
+                "drag_coeff": 0.11,
+                "rolling_res": 0.004,
+                "battery_capacity": 54000000,
+                "panel_area": 5,
+                "panel_efficiency": 0.243,
+                "battery_efficiency": 0.95,
+                "motor_efficiency": 0.9
+            }
+        }
+    ],
+    "environment": [
+        {
+            "id": "standard_day",
+            "name": "Standard Day",
+            "description": "Ideal sunny conditions",
+            "values": {
+                "solar_irradiance": 1000,
+                "temperature": 25,
+                "wind_speed": 0,
+                "slope": 0
+            }
+        },
+        {
+            "id": "cloudy",
+            "name": "Cloudy",
+            "description": "Overcast conditions with light wind",
+            "values": {
+                "solar_irradiance": 400,
+                "temperature": 20,
+                "wind_speed": 2,
+                "slope": 0
+            }
+        },
+        {
+            "id": "hot_day",
+            "name": "Hot Day",
+            "description": "High temperature, full sun",
+            "values": {
+                "solar_irradiance": 1000,
+                "temperature": 35,
+                "wind_speed": 0,
+                "slope": 0
+            }
+        }
+    ],
+    "drivecycle": [
+        {
+            "id": "cruising_speed",
+            "name": "Cruising Speed",
+            "description": "Constant speed profile",
+            "type": "constant",
+            "values": {
+                "target_speed": 20
+            }
+        },
+        {
+            "id": "wltp_cycle",
+            "name": "WLTP Cycle",
+            "description": "Urban cycle with variable speeds",
+            "type": "cycle",
+            "ref": "drivecycles/WLTP.csv"
+        }
+    ]
 }

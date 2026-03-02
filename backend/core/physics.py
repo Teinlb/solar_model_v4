@@ -48,6 +48,7 @@ def calc_power_demand(
     """
     Estimate total propulsion + auxiliaries power draw (W).
     Sums mechanical forces, applies efficiency, and adds auxiliary load.
+    Note: Regenerative braking (negative acceleration) is handled in power supply.
     """
     
     p_air = calc_air_drag_power(speed_m_s, car, env)
@@ -55,14 +56,11 @@ def calc_power_demand(
     p_slope = calc_slope_power(speed_m_s, slope_rad, car, env)
     p_accel = calc_acceleration_power(speed_m_s, acceleration_m_s2, car)
 
-    p_mechanical_total = p_air + p_roll + p_slope + p_accel
+    # Mechanical power needed (only positive acceleration consumes power)
+    p_mechanical_driving = p_air + p_roll + p_slope + max(0, p_accel)
 
     # Convert to electrical power demand accounting for motor efficiency
-    if p_mechanical_total > 0:
-        p_electrical_traction = p_mechanical_total / car.motor_efficiency
-    else:
-        # Regenerative braking
-        p_electrical_traction = p_mechanical_total * car.regen_efficiency
+    p_electrical_traction = p_mechanical_driving / car.motor_efficiency
 
     # Add auxiliary power consumption
     total_consumption = p_electrical_traction + car.aux_power
@@ -70,8 +68,36 @@ def calc_power_demand(
     return total_consumption
 
 
-def calc_power_supply(irradiance_w_m2: float, car: object) -> float:
+def calc_solar_power(irradiance_w_m2: float, car: object) -> float:
     """
-    Solar power supply (W) from panels.
+    Calculate solar power supply (W) from panels.
+    P = irradiance * panel_area * panel_efficiency
     """
     return irradiance_w_m2 * car.panel_area * car.panel_efficiency
+
+
+def calc_regen_power(speed_m_s: float, acceleration_m_s2: float, car: object) -> float:
+    """
+    Calculate regenerative braking power supply (W).
+    Only when acceleration is negative (braking/coasting down).
+    P = |m * a * v| * regen_efficiency
+    """
+    if acceleration_m_s2 < 0:
+        p_accel = calc_acceleration_power(speed_m_s, acceleration_m_s2, car)
+        # p_accel is negative, convert to positive supply with regen efficiency
+        regen_output = abs(p_accel) * car.regen_efficiency
+        return regen_output
+    
+    return 0.0
+
+
+def calc_power_supply(irradiance_w_m2: float, speed_m_s: float, acceleration_m_s2: float, car: object) -> float:
+    """
+    Calculate total power supply (W): solar panels + regenerative braking.
+    Applies battery efficiency to total supply.
+    """
+    solar_power = calc_solar_power(irradiance_w_m2, car)
+    regen_power = calc_regen_power(speed_m_s, acceleration_m_s2, car)
+    
+    total_power = solar_power + regen_power
+    return total_power * car.battery_efficiency
