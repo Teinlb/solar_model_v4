@@ -44,9 +44,22 @@ class Simulation:
         )
 
         if net_power < 0:
-            self.state.time = int(self.state.energy / net_power)
+            # Discharging: calculate how long until battery empty
+            # time = energy / |net_power|
+            self.state.time = int(self.state.energy / abs(net_power))
         else:
+            # Charging or balanced: use configured duration
             self.state.time = int(self.cfg.sim.duration)
+
+        # Calculate distance traveled at constant velocity
+        self.state.distance = self.state.velocity * self.state.time
+
+        # Update energy based on net_power and time
+        energy_change = net_power * self.state.time
+        self.state.energy += energy_change
+        
+        # Clamp energy to valid range [0, battery_capacity]
+        self.state.energy = max(0, min(self.state.energy, self.cfg.car.battery_capacity))
 
         self.state.power = net_power
 

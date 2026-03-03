@@ -50,9 +50,6 @@ export default function ParameterSection({
             {/* Preset Buttons */}
             {presets && onPresetSelect && (
                 <div className="mb-4 pb-4 border-b border-slate-200">
-                    <p className="text-xs font-medium text-slate-600 mb-2 uppercase tracking-wide">
-                        Quick Presets
-                    </p>
                     <div className="flex flex-wrap gap-2">
                         {presets?.map((preset) => (
                             <button
@@ -76,7 +73,6 @@ export default function ParameterSection({
 
             <div className="space-y-4">
                 {Object.entries(config || {}).map(([key, meta]) => {
-                    const fieldKey = getFieldKey(key);
                     const value = formData?.[key] ?? meta.default ?? "";
                     const widgetType = meta.ui?.widget || "input";
 
@@ -139,11 +135,210 @@ export default function ParameterSection({
                                         }
                                         className="flex-1 accent-blue-600"
                                     />
-                                    <span className="text-xs text-slate-600 w-16 text-right font-medium">
-                                        {typeof value === "number"
-                                            ? value.toFixed(2)
-                                            : value}
-                                    </span>
+                                    <input
+                                        type="number"
+                                        step="any"
+                                        value={value}
+                                        onChange={(e) =>
+                                            onChange(
+                                                section,
+                                                key,
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="w-16 px-1 border border-slate-300 rounded text-xs text-right"
+                                    />
+                                </div>
+                            ) : widgetType === "frontal" ? (
+                                <div>
+                                    <div className="grid grid-cols-3 gap-3">
+                                        <div>
+                                            <label className="block text-xs text-slate-700 mb-1">
+                                                Width (m)
+                                            </label>
+                                            <input
+                                                id={`${section}-${key}-width`}
+                                                type="number"
+                                                step="any"
+                                                value={
+                                                    formData?.[
+                                                        `${key}_width`
+                                                    ] ?? 2
+                                                }
+                                                onChange={(e) => {
+                                                    const w = e.target.value;
+                                                    const h =
+                                                        formData?.[
+                                                            `${key}_height`
+                                                        ] ?? 1;
+                                                    const s =
+                                                        formData?.[
+                                                            `${key}_shape`
+                                                        ] ?? 1;
+                                                    onChange(
+                                                        section,
+                                                        `${key}_width`,
+                                                        w,
+                                                    );
+                                                    onChange(
+                                                        section,
+                                                        `${key}_height`,
+                                                        h,
+                                                    );
+                                                    onChange(
+                                                        section,
+                                                        `${key}_shape`,
+                                                        s,
+                                                    );
+                                                    const wNum =
+                                                        parseFloat(w) || 0;
+                                                    const hNum =
+                                                        parseFloat(h) || 0;
+                                                    const sNum =
+                                                        parseFloat(s) || 0;
+                                                    onChange(
+                                                        section,
+                                                        key,
+                                                        wNum * hNum * sNum,
+                                                    );
+                                                }}
+                                                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs text-slate-700 mb-1">
+                                                Height (m)
+                                            </label>
+                                            <input
+                                                id={`${section}-${key}-height`}
+                                                type="number"
+                                                step="any"
+                                                value={
+                                                    formData?.[
+                                                        `${key}_height`
+                                                    ] ?? 1
+                                                }
+                                                onChange={(e) => {
+                                                    const w =
+                                                        formData?.[
+                                                            `${key}_width`
+                                                        ] ?? 2;
+                                                    const h = e.target.value;
+                                                    const s =
+                                                        formData?.[
+                                                            `${key}_shape`
+                                                        ] ?? 1;
+                                                    onChange(
+                                                        section,
+                                                        `${key}_width`,
+                                                        w,
+                                                    );
+                                                    onChange(
+                                                        section,
+                                                        `${key}_height`,
+                                                        h,
+                                                    );
+                                                    onChange(
+                                                        section,
+                                                        `${key}_shape`,
+                                                        s,
+                                                    );
+                                                    const wNum =
+                                                        parseFloat(w) || 0;
+                                                    const hNum =
+                                                        parseFloat(h) || 0;
+                                                    const sNum =
+                                                        parseFloat(s) || 0;
+                                                    onChange(
+                                                        section,
+                                                        key,
+                                                        wNum * hNum * sNum,
+                                                    );
+                                                }}
+                                                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs text-slate-700 mb-1">
+                                                Shape factor
+                                            </label>
+                                            <input
+                                                id={`${section}-${key}-shape`}
+                                                type="number"
+                                                step="any"
+                                                value={
+                                                    formData?.[
+                                                        `${key}_shape`
+                                                    ] ?? 1
+                                                }
+                                                onChange={(e) => {
+                                                    const w =
+                                                        formData?.[
+                                                            `${key}_width`
+                                                        ] ?? 2;
+                                                    const h =
+                                                        formData?.[
+                                                            `${key}_height`
+                                                        ] ?? 1;
+                                                    const s = e.target.value;
+                                                    onChange(
+                                                        section,
+                                                        `${key}_width`,
+                                                        w,
+                                                    );
+                                                    onChange(
+                                                        section,
+                                                        `${key}_height`,
+                                                        h,
+                                                    );
+                                                    onChange(
+                                                        section,
+                                                        `${key}_shape`,
+                                                        s,
+                                                    );
+                                                    const wNum =
+                                                        parseFloat(w) || 0;
+                                                    const hNum =
+                                                        parseFloat(h) || 0;
+                                                    const sNum =
+                                                        parseFloat(s) || 0;
+                                                    onChange(
+                                                        section,
+                                                        key,
+                                                        wNum * hNum * sNum,
+                                                    );
+                                                }}
+                                                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            />
+                                        </div>
+                                    </div>
+                                    {/* validation warning */}
+                                    {(() => {
+                                        const wVal = parseFloat(
+                                            formData?.[`${key}_width`] ?? 0,
+                                        );
+                                        const hVal = parseFloat(
+                                            formData?.[`${key}_height`] ?? 0,
+                                        );
+                                        const sVal = parseFloat(
+                                            formData?.[`${key}_shape`] ?? 0,
+                                        );
+                                        let warn = null;
+                                        if (wVal < 0)
+                                            warn = "Width should be ≥ 0";
+                                        else if (hVal < 0)
+                                            warn = "Height should be ≥ 0";
+                                        else if (sVal < 0 || sVal > 1)
+                                            warn =
+                                                "Shape factor must be between 0 and 1";
+                                        return (
+                                            warn && (
+                                                <p className="text-xs text-red-600 mt-1">
+                                                    {warn}
+                                                </p>
+                                            )
+                                        );
+                                    })()}
                                 </div>
                             ) : widgetType === "dropdown" ? (
                                 <select

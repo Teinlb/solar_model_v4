@@ -9,6 +9,7 @@ Provides a clean interface for:
 
 from typing import Dict, Any, List, Iterator
 from itertools import product
+import copy
 
 from .helpers import load_default_parameters, merge_configs
 from .core.simulation import Simulation
@@ -36,21 +37,25 @@ def run_simulation(config_overrides: Dict[str, Any] = None) -> Dict[str, Any]:
     
     # Run simulation
     sim = Simulation(config)
+    initial_state = copy.deepcopy(sim.state)  # Capture initial state (must be deep copy!)
     history = sim.run()
     
     # Return results
-    return {
-        "status": "success",
-        "config": config.to_dict(),
-        "history_length": len(history),
-        "final_state": {
-            "time": history[-1].time if history else 0,
-            "distance": history[-1].distance if history else 0,
-            "energy": history[-1].energy if history else 0,
-            "velocity": history[-1].velocity if history else 0,
-            "power": history[-1].power if history else 0,
-        },
-        "history": [
+    # For constant mode: history has 1 entry, include it
+    # For cycle mode: history has many entries, exclude interpolated final point
+    if len(history) <= 1:
+        history_data = [
+            {
+                "time": s.time,
+                "distance": s.distance,
+                "velocity": s.velocity,
+                "energy": s.energy,
+                "power": s.power,
+            }
+            for s in history
+        ]
+    else:
+        history_data = [
             {
                 "time": s.time,
                 "distance": s.distance,
@@ -60,6 +65,26 @@ def run_simulation(config_overrides: Dict[str, Any] = None) -> Dict[str, Any]:
             }
             for s in history[:-1]
         ]
+    
+    return {
+        "status": "success",
+        "config": config.to_dict(),
+        "history_length": len(history),
+        "initial_state": {
+            "time": initial_state.time,
+            "distance": initial_state.distance,
+            "energy": initial_state.energy,
+            "velocity": initial_state.velocity,
+            "power": initial_state.power,
+        },
+        "final_state": {
+            "time": history[-1].time if history else 0,
+            "distance": history[-1].distance if history else 0,
+            "energy": history[-1].energy if history else 0,
+            "velocity": history[-1].velocity if history else 0,
+            "power": history[-1].power if history else 0,
+        },
+        "history": history_data
     }
 
 

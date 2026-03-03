@@ -1,8 +1,14 @@
 export default function ResultsPanel({ results }) {
     if (!results) return null;
 
+    const initial = results.initial_state || {};
     const final = results.final_state || {};
     const history = results.history || [];
+
+    // Calculate average net power from initial and final states
+    const duration = final.time || 1;
+    const energyDelta = (initial.energy || 0) - (final.energy || 0);
+    const avgPower = duration > 0 ? energyDelta / duration / 1000 : 0;
 
     const stats = [
         { label: "Duration", value: `${(final.time / 3600).toFixed(1)} h` },
@@ -16,12 +22,13 @@ export default function ResultsPanel({ results }) {
         },
         {
             label: "Average Net Power",
-            value: `${(history[0].energy / final.time / 1000).toFixed(2)} kW`,
+            value: `${avgPower.toFixed(2)} kW`,
         },
     ];
 
     const getChartData = () => {
-        if (!history || history.length === 0) return { labels: [], values: [] };
+        // Need at least 2 points for meaningful charts
+        if (!history || history.length < 2) return null;
         const step = Math.max(1, Math.floor(history.length / 100));
         const sampled = history.filter((_, i) => i % step === 0);
         return {
@@ -53,8 +60,8 @@ export default function ResultsPanel({ results }) {
                 ))}
             </div>
 
-            {/* Charts */}
-            {chartData.labels.length > 0 && (
+            {/* Charts - only show if enough history data (2+ points) */}
+            {chartData && chartData.labels.length > 0 && (
                 <>
                     <div className="bg-white border border-slate-200 rounded-lg p-4">
                         <h3 className="text-sm font-semibold text-slate-900 mb-4">
@@ -89,6 +96,17 @@ export default function ResultsPanel({ results }) {
                         />
                     </div>
                 </>
+            )}
+
+            {/* Info message for constant speed simulations */}
+            {!chartData && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p className="text-sm text-blue-800">
+                        <strong>Constant Speed Mode:</strong> Trajectories are
+                        linear and can be derived from the summary statistics
+                        above.
+                    </p>
+                </div>
             )}
 
             {/* Full History Data */}

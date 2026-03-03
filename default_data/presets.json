@@ -7,7 +7,7 @@
             "values": {
                 "mass": 1575,
                 "frontal_area": 2,
-                "drag_coeff": 0.175,
+                "drag_coeff": 0.2,
                 "rolling_res": 0.008,
                 "battery_capacity": 216000000,
                 "panel_area": 5,
@@ -23,7 +23,7 @@
             "values": {
                 "mass": 375,
                 "frontal_area": 1.7,
-                "drag_coeff": 0.11,
+                "drag_coeff": 0.14,
                 "rolling_res": 0.004,
                 "battery_capacity": 54000000,
                 "panel_area": 5,

@@ -157,6 +157,18 @@ function PresetsEditor({ presets, config, onChange }) {
         onChange(updated);
     };
 
+    const deletePresetValue = (category, presetIndex, paramKey) => {
+        const updated = JSON.parse(JSON.stringify(presets));
+        delete updated[category][presetIndex].values[paramKey];
+        onChange(updated);
+    };
+
+    const addPresetValue = (category, presetIndex, paramKey) => {
+        const updated = JSON.parse(JSON.stringify(presets));
+        updated[category][presetIndex].values[paramKey] = "";
+        onChange(updated);
+    };
+
     // Get section key for config lookup
     const getCategorySection = (category) => {
         const map = { vehicle: "car", environment: "env", drivecycle: "sim" };
@@ -253,30 +265,119 @@ function PresetsEditor({ presets, config, onChange }) {
                                         <div className="grid grid-cols-2 gap-3">
                                             {Object.entries(
                                                 preset.values || {},
-                                            ).map(([key, val]) => (
-                                                <div key={key}>
-                                                    <label className="block text-xs font-medium text-slate-600 mb-1">
-                                                        {getParamLabel(
-                                                            category,
-                                                            key,
-                                                        )}
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        value={val}
-                                                        onChange={(e) =>
-                                                            updatePreset(
-                                                                category,
-                                                                idx,
-                                                                `values.${key}`,
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                        className="w-full px-2 py-1 border border-slate-300 rounded text-xs"
-                                                    />
-                                                </div>
-                                            ))}
+                                            ).map(([key, val]) => {
+                                                const section =
+                                                    getCategorySection(
+                                                        category,
+                                                    );
+                                                const paramLabel =
+                                                    getParamLabel(
+                                                        category,
+                                                        key,
+                                                    );
+                                                return (
+                                                    <div key={key}>
+                                                        <div className="flex items-center justify-between mb-1">
+                                                            <label className="block text-xs font-medium text-slate-600">
+                                                                {paramLabel}
+                                                            </label>
+                                                            <button
+                                                                onClick={() =>
+                                                                    deletePresetValue(
+                                                                        category,
+                                                                        idx,
+                                                                        key,
+                                                                    )
+                                                                }
+                                                                className="text-red-500 text-xs hover:text-red-700"
+                                                            >
+                                                                ✕
+                                                            </button>
+                                                        </div>
+                                                        <input
+                                                            type="text"
+                                                            value={val}
+                                                            onChange={(e) =>
+                                                                updatePreset(
+                                                                    category,
+                                                                    idx,
+                                                                    `values.${key}`,
+                                                                    e.target
+                                                                        .value,
+                                                                )
+                                                            }
+                                                            className="w-full px-2 py-1 border border-slate-300 rounded text-xs"
+                                                        />
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
+
+                                        {/* Add Parameter Button */}
+                                        {(() => {
+                                            const section =
+                                                getCategorySection(category);
+                                            const availableParams =
+                                                Object.entries(
+                                                    config[section] || {},
+                                                )
+                                                    .filter(
+                                                        ([key]) =>
+                                                            !preset.values[key],
+                                                    )
+                                                    .map(([key]) => key);
+
+                                            return availableParams.length >
+                                                0 ? (
+                                                <div className="mt-3 flex gap-2">
+                                                    <select
+                                                        id={`add_param_${idx}`}
+                                                        className="flex-1 px-2 py-1 border border-slate-300 rounded text-xs"
+                                                        defaultValue=""
+                                                    >
+                                                        <option value="">
+                                                            -- Select parameter
+                                                        </option>
+                                                        {availableParams.map(
+                                                            (key) => (
+                                                                <option
+                                                                    key={key}
+                                                                    value={key}
+                                                                >
+                                                                    {getParamLabel(
+                                                                        category,
+                                                                        key,
+                                                                    )}
+                                                                </option>
+                                                            ),
+                                                        )}
+                                                    </select>
+                                                    <button
+                                                        onClick={() => {
+                                                            const select =
+                                                                document.getElementById(
+                                                                    `add_param_${idx}`,
+                                                                );
+                                                            if (
+                                                                select &&
+                                                                select.value
+                                                            ) {
+                                                                addPresetValue(
+                                                                    category,
+                                                                    idx,
+                                                                    select.value,
+                                                                );
+                                                                select.value =
+                                                                    "";
+                                                            }
+                                                        }}
+                                                        className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
+                                                    >
+                                                        Add
+                                                    </button>
+                                                </div>
+                                            ) : null;
+                                        })()}
                                     </div>
                                     <button
                                         onClick={() =>
@@ -315,15 +416,63 @@ function ParametersEditor({ config, onChange }) {
         } else if (field.startsWith("ui.")) {
             const uiKey = field.split(".")[1];
             updated[section][paramKey].ui[uiKey] = value;
+        } else if (field.startsWith("ui.options.")) {
+            const [_, index, optionField] = field.split(".");
+            updated[section][paramKey].ui.options[parseInt(index)][
+                optionField
+            ] = value;
         } else {
-            updated[section][paramKey][field] = value;
+            updated[section][paramKey][field] = isNaN(value)
+                ? value
+                : parseFloat(value);
         }
+        onChange(updated);
+    };
+
+    const addOption = (section, paramKey) => {
+        const updated = JSON.parse(JSON.stringify(config));
+        if (!updated[section][paramKey].ui.options) {
+            updated[section][paramKey].ui.options = [];
+        }
+        updated[section][paramKey].ui.options.push({
+            value: "",
+            label: "",
+        });
+        onChange(updated);
+    };
+
+    const deleteOption = (section, paramKey, optionIndex) => {
+        const updated = JSON.parse(JSON.stringify(config));
+        updated[section][paramKey].ui.options.splice(optionIndex, 1);
+        onChange(updated);
+    };
+
+    const addParameter = (section) => {
+        const updated = JSON.parse(JSON.stringify(config));
+        const newKey = `new_param_${Date.now()}`;
+        updated[section][newKey] = {
+            default: 0,
+            constraints: { type: "float" },
+            ui: {
+                label: "New Parameter",
+                widget: "input",
+                info: "",
+            },
+        };
+        onChange(updated);
+    };
+
+    const deleteParameter = (section, paramKey) => {
+        const updated = JSON.parse(JSON.stringify(config));
+        delete updated[section][paramKey];
         onChange(updated);
     };
 
     const widgetTypes = [
         { value: "input", label: "Input" },
         { value: "slider", label: "Slider" },
+        { value: "dropdown", label: "Dropdown" },
+        { value: "frontal", label: "Frontal" },
         { value: "read_only", label: "Read-only" },
         { value: "hidden", label: "Hidden" },
     ];
@@ -348,7 +497,9 @@ function ParametersEditor({ config, onChange }) {
                                 ? "Vehicle"
                                 : section === "env"
                                   ? "Environment"
-                                  : "Simulation"}{" "}
+                                  : section === "profile"
+                                    ? "Profile"
+                                    : "Simulation"}{" "}
                             Parameters
                         </h3>
                         <span className="text-slate-500">
@@ -366,16 +517,64 @@ function ParametersEditor({ config, onChange }) {
                                         key={key}
                                         className="border border-slate-200 rounded p-4 bg-slate-50"
                                     >
-                                        {/* Parameter Name */}
-                                        <div className="font-semibold text-slate-900 mb-3 text-sm">
-                                            {param.ui?.label || key}
+                                        {/* Parameter Name & Delete */}
+                                        <div className="flex items-center justify-between mb-3">
+                                            <div className="font-semibold text-slate-900 text-sm">
+                                                {param.ui?.label || key}
+                                            </div>
+                                            <button
+                                                onClick={() =>
+                                                    deleteParameter(
+                                                        section,
+                                                        key,
+                                                    )
+                                                }
+                                                className="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600"
+                                            >
+                                                Delete Param
+                                            </button>
+                                        </div>
+
+                                        {/* Key (read-only) */}
+                                        <div className="mb-3">
+                                            <label className="block text-xs font-medium text-slate-700 mb-1">
+                                                Key
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={key}
+                                                disabled
+                                                className="w-full px-3 py-2 border border-slate-300 rounded text-sm bg-slate-100"
+                                            />
+                                        </div>
+
+                                        {/* Default Value */}
+                                        <div className="mb-3">
+                                            <label className="block text-xs font-medium text-slate-700 mb-1">
+                                                Default Value
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={param.default || ""}
+                                                onChange={(e) =>
+                                                    updateParameter(
+                                                        section,
+                                                        key,
+                                                        "default",
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-slate-300 rounded text-sm"
+                                            />
                                         </div>
 
                                         {/* Label Field */}
                                         <div className="mb-3">
+                                            <label className="block text-xs font-medium text-slate-700 mb-1">
+                                                Display Label
+                                            </label>
                                             <input
                                                 type="text"
-                                                placeholder="Display label"
                                                 value={param.ui?.label || ""}
                                                 onChange={(e) =>
                                                     updateParameter(
@@ -391,6 +590,9 @@ function ParametersEditor({ config, onChange }) {
 
                                         {/* Widget Type Buttons */}
                                         <div className="mb-3">
+                                            <label className="block text-xs font-medium text-slate-700 mb-2">
+                                                Widget Type
+                                            </label>
                                             <div className="flex flex-wrap gap-2">
                                                 {widgetTypes.map((type) => (
                                                     <button
@@ -418,8 +620,10 @@ function ParametersEditor({ config, onChange }) {
 
                                         {/* Info */}
                                         <div className="mb-3">
+                                            <label className="block text-xs font-medium text-slate-700 mb-1">
+                                                Info Text
+                                            </label>
                                             <textarea
-                                                placeholder="Info text"
                                                 value={param.ui?.info || ""}
                                                 onChange={(e) =>
                                                     updateParameter(
@@ -435,55 +639,185 @@ function ParametersEditor({ config, onChange }) {
                                         </div>
 
                                         {/* Constraints */}
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div>
-                                                <label className="block text-xs font-medium text-slate-700 mb-1">
-                                                    Min Value
-                                                </label>
-                                                <input
-                                                    type="number"
-                                                    placeholder="Min"
-                                                    value={
-                                                        param.constraints
-                                                            ?.min || ""
-                                                    }
-                                                    onChange={(e) =>
-                                                        updateParameter(
-                                                            section,
-                                                            key,
-                                                            "constraints.min",
-                                                            e.target.value,
-                                                        )
-                                                    }
-                                                    className="w-full px-3 py-2 border border-slate-300 rounded text-sm"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-xs font-medium text-slate-700 mb-1">
-                                                    Max Value
-                                                </label>
-                                                <input
-                                                    type="number"
-                                                    placeholder="Max"
-                                                    value={
-                                                        param.constraints
-                                                            ?.max || ""
-                                                    }
-                                                    onChange={(e) =>
-                                                        updateParameter(
-                                                            section,
-                                                            key,
-                                                            "constraints.max",
-                                                            e.target.value,
-                                                        )
-                                                    }
-                                                    className="w-full px-3 py-2 border border-slate-300 rounded text-sm"
-                                                />
-                                            </div>
+                                        <div className="mb-3">
+                                            <label className="block text-xs font-medium text-slate-700 mb-2">
+                                                Constraint Type
+                                            </label>
+                                            <select
+                                                value={
+                                                    param.constraints?.type ||
+                                                    "float"
+                                                }
+                                                onChange={(e) =>
+                                                    updateParameter(
+                                                        section,
+                                                        key,
+                                                        "constraints.type",
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-slate-300 rounded text-sm"
+                                            >
+                                                <option value="float">
+                                                    Float
+                                                </option>
+                                                <option value="string">
+                                                    String
+                                                </option>
+                                                <option value="int">
+                                                    Integer
+                                                </option>
+                                            </select>
                                         </div>
+
+                                        {param.constraints?.type ===
+                                            "float" && (
+                                            <div className="grid grid-cols-2 gap-3 mb-3">
+                                                <div>
+                                                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                                                        Min Value
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        value={
+                                                            param.constraints
+                                                                ?.min ?? ""
+                                                        }
+                                                        onChange={(e) =>
+                                                            updateParameter(
+                                                                section,
+                                                                key,
+                                                                "constraints.min",
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        className="w-full px-3 py-2 border border-slate-300 rounded text-sm"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                                                        Max Value
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        value={
+                                                            param.constraints
+                                                                ?.max ?? ""
+                                                        }
+                                                        onChange={(e) =>
+                                                            updateParameter(
+                                                                section,
+                                                                key,
+                                                                "constraints.max",
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        className="w-full px-3 py-2 border border-slate-300 rounded text-sm"
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Dropdown Options */}
+                                        {currentWidget === "dropdown" && (
+                                            <div className="mb-3 border-t pt-3">
+                                                <label className="block text-xs font-medium text-slate-700 mb-2">
+                                                    Dropdown Options
+                                                </label>
+                                                <div className="space-y-2">
+                                                    {(
+                                                        param.ui?.options || []
+                                                    ).map((option, idx) => (
+                                                        <div
+                                                            key={idx}
+                                                            className="flex gap-2 items-end"
+                                                        >
+                                                            <div className="flex-1">
+                                                                <label className="block text-xs text-slate-600 mb-1">
+                                                                    Value
+                                                                </label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={
+                                                                        option.value ||
+                                                                        ""
+                                                                    }
+                                                                    onChange={(
+                                                                        e,
+                                                                    ) =>
+                                                                        updateParameter(
+                                                                            section,
+                                                                            key,
+                                                                            `ui.options.${idx}.value`,
+                                                                            e
+                                                                                .target
+                                                                                .value,
+                                                                        )
+                                                                    }
+                                                                    placeholder="Value"
+                                                                    className="w-full px-2 py-1 border border-slate-300 rounded text-xs"
+                                                                />
+                                                            </div>
+                                                            <div className="flex-1">
+                                                                <label className="block text-xs text-slate-600 mb-1">
+                                                                    Label
+                                                                </label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={
+                                                                        option.label ||
+                                                                        ""
+                                                                    }
+                                                                    onChange={(
+                                                                        e,
+                                                                    ) =>
+                                                                        updateParameter(
+                                                                            section,
+                                                                            key,
+                                                                            `ui.options.${idx}.label`,
+                                                                            e
+                                                                                .target
+                                                                                .value,
+                                                                        )
+                                                                    }
+                                                                    placeholder="Label"
+                                                                    className="w-full px-2 py-1 border border-slate-300 rounded text-xs"
+                                                                />
+                                                            </div>
+                                                            <button
+                                                                onClick={() =>
+                                                                    deleteOption(
+                                                                        section,
+                                                                        key,
+                                                                        idx,
+                                                                    )
+                                                                }
+                                                                className="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600"
+                                                            >
+                                                                Remove
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <button
+                                                    onClick={() =>
+                                                        addOption(section, key)
+                                                    }
+                                                    className="mt-2 w-full py-1 border-2 border-dashed border-slate-300 rounded text-slate-600 hover:bg-slate-100 text-xs font-medium"
+                                                >
+                                                    + Add Option
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 );
                             })}
+                            <button
+                                onClick={() => addParameter(section)}
+                                className="w-full py-2 border-2 border-dashed border-slate-300 rounded text-slate-600 hover:bg-slate-50 font-medium transition"
+                            >
+                                + Add Parameter
+                            </button>
                         </div>
                     )}
                 </div>

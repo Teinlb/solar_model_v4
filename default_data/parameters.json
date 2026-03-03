@@ -10,7 +10,7 @@
       },
       "ui": {
         "label": "Mass (kg)",
-        "widget": "hidden",
+        "widget": "input",
         "info": "Total vehicle mass. Used in drag, rolling resistance, slope, and acceleration"
       }
     },
@@ -23,8 +23,8 @@
       },
       "ui": {
         "label": "Frontal area (m\u00b2)",
-        "widget": "input",
-        "info": "Vehicle cross-sectional area for aerodynamic drag"
+        "widget": "frontal",
+        "info": "Vehicle cross-sectional area for aerodynamic drag (width \u00d7 height \u00d7 shape factor)"
       }
     },
     "drag_coeff": {
@@ -36,12 +36,30 @@
       },
       "ui": {
         "label": "Drag coefficient (Cd)",
-        "widget": "slider",
+        "widget": "dropdown",
+        "options": [
+          {
+            "value": 0.14,
+            "label": "Extreem gestroomlijnd (0.14)"
+          },
+          {
+            "value": 0.2,
+            "label": "Zeer gestroomlijnd (0.20)"
+          },
+          {
+            "value": 0.28,
+            "label": "Gemiddelde personenauto (0.28)"
+          },
+          {
+            "value": 0.38,
+            "label": "SUV (0.38)"
+          }
+        ],
         "info": "Aerodynamic drag coefficient"
       }
     },
     "rolling_res": {
-      "default": 0.01,
+      "default": 0.015,
       "constraints": {
         "min": 0.001,
         "max": 0.1,
@@ -49,28 +67,48 @@
       },
       "ui": {
         "label": "Rolling resistance (Cr)",
-        "widget": "slider",
+        "widget": "dropdown",
+        "options": [
+          {
+            "value": 0.004,
+            "label": "0.004"
+          },
+          {
+            "value": 0.008,
+            "label": "0.008"
+          },
+          {
+            "value": 0.01,
+            "label": "0.01"
+          },
+          {
+            "value": 0.015,
+            "label": "0.015 - Standaard banden op strak geasfalteerd wegdek"
+          },
+          {
+            "value": 0.02,
+            "label": "0.02 - Wegdek van teer, asfalt, of nieuw gravel wegdek"
+          },
+          {
+            "value": 0.03,
+            "label": "0.03 - Oud wegdek met kiezels"
+          },
+          {
+            "value": 0.04,
+            "label": "0.04"
+          },
+          {
+            "value": 0.06,
+            "label": "0.06 - Onverhard wegdek"
+          }
+        ],
         "info": "Rolling resistance coefficient"
-      }
-    },
-    "target_speed": {
-      "default": 18,
-      "constraints": {
-        "min": 0,
-        "max": 300,
-        "type": "float"
-      },
-      "ui": {
-        "label": "Target speed (km/h)",
-        "widget": "slider",
-        "info": "Desired cruising speed"
       }
     },
     "battery_capacity": {
       "default": 72000000,
       "constraints": {
-        "min": 36000000,
-        "max": 720000000,
+        "min": 0,
         "type": "float"
       },
       "ui": {
@@ -93,19 +131,6 @@
         "info": "Round-trip charging/discharging efficiency"
       }
     },
-    "available_capacity": {
-      "default": 100,
-      "constraints": {
-        "min": 0,
-        "max": 100,
-        "type": "float"
-      },
-      "ui": {
-        "label": "Available capacity (%)",
-        "widget": "slider",
-        "info": "Usable fraction of total battery capacity"
-      }
-    },
     "motor_efficiency": {
       "default": 0.9,
       "constraints": {
@@ -117,6 +142,19 @@
         "label": "Motor efficiency",
         "widget": "slider",
         "info": "Drivetrain electrical to mechanical conversion efficiency"
+      }
+    },
+    "available_capacity": {
+      "default": 100,
+      "constraints": {
+        "min": 0,
+        "max": 100,
+        "type": "float"
+      },
+      "ui": {
+        "label": "Available capacity (%)",
+        "widget": "slider",
+        "info": "Usable fraction of total battery capacity"
       }
     },
     "aux_power": {
@@ -133,7 +171,7 @@
       }
     },
     "regen_efficiency": {
-      "default": 0,
+      "default": 0.7,
       "constraints": {
         "min": 0,
         "max": 1,
@@ -180,7 +218,7 @@
       },
       "ui": {
         "label": "Panel temp coeff (%/\u00b0C)",
-        "widget": "input",
+        "widget": "hidden",
         "info": "Panel efficiency change per degree Celsius"
       }
     }
@@ -208,9 +246,11 @@
       }
     },
     "target_speed": {
-      "default": 1,
+      "default": 20,
       "constraints": {
-        "type": "string"
+        "min": 0,
+        "max": 100,
+        "type": "float"
       },
       "ui": {
         "label": "Target speed (m/s)",
@@ -282,7 +322,7 @@
       },
       "ui": {
         "label": "Wind speed (m/s)",
-        "widget": "slider",
+        "widget": "hidden",
         "info": "Wind velocity magnitude"
       }
     },
@@ -295,7 +335,7 @@
       },
       "ui": {
         "label": "Wind direction (\u00b0)",
-        "widget": "slider",
+        "widget": "hidden",
         "info": "Wind direction in degrees"
       }
     },

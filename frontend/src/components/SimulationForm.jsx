@@ -57,11 +57,9 @@ export default function SimulationForm({ config, presets, onSubmit }) {
 
         let finalValue = value;
         if (constraint?.type === "float") {
-            finalValue = parseFloat(value) || 0;
-            if (constraint.min !== undefined)
-                finalValue = Math.max(finalValue, constraint.min);
-            if (constraint.max !== undefined)
-                finalValue = Math.min(finalValue, constraint.max);
+            finalValue = parseFloat(value);
+            // allow NaN during typing; will be coerced later by backend
+            if (isNaN(finalValue)) finalValue = value;
         }
 
         setFormData((prev) => ({
