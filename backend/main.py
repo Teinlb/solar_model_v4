@@ -48,8 +48,7 @@ def run_simulation(config_overrides: Dict[str, Any] = None) -> Dict[str, Any]:
             "distance": history[-1].distance if history else 0,
             "energy": history[-1].energy if history else 0,
             "velocity": history[-1].velocity if history else 0,
-            "power_demand": history[-1].last_power_demand if history else 0,
-            "power_supply": history[-1].last_power_supply if history else 0,
+            "power": history[-1].power if history else 0,
         },
         "history": [
             {
@@ -57,10 +56,9 @@ def run_simulation(config_overrides: Dict[str, Any] = None) -> Dict[str, Any]:
                 "distance": s.distance,
                 "velocity": s.velocity,
                 "energy": s.energy,
-                "power_demand": s.last_power_demand,
-                "power_supply": s.last_power_supply,
+                "power": s.power,
             }
-            for s in history
+            for s in history[:-1]
         ]
     }
 

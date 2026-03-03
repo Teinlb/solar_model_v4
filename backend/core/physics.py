@@ -67,12 +67,12 @@ def calc_power_demand(
     return total_consumption
 
 
-def calc_solar_power(irradiance_w_m2: float, car: object) -> float:
+def calc_solar_power(car: object, env: object) -> float:
     """
     Calculate solar power supply (W) from panels.
     P = irradiance * panel_area * panel_efficiency
     """
-    return irradiance_w_m2 * car.panel_area * car.panel_efficiency
+    return env.solar_irradiance * car.panel_area * car.panel_efficiency
 
 
 def calc_regen_power(speed_m_s: float, acceleration_m_s2: float, car: object) -> float:
@@ -90,12 +90,12 @@ def calc_regen_power(speed_m_s: float, acceleration_m_s2: float, car: object) ->
     return 0.0
 
 
-def calc_power_supply(irradiance_w_m2: float, speed_m_s: float, acceleration_m_s2: float, car: object) -> float:
+def calc_power_supply(speed_m_s: float, acceleration_m_s2: float, car: object, env: object) -> float:
     """
     Calculate total power supply (W): solar panels + regenerative braking.
     Applies battery efficiency to total supply.
     """
-    solar_power = calc_solar_power(irradiance_w_m2, car)
+    solar_power = calc_solar_power(car, env)
     regen_power = calc_regen_power(speed_m_s, acceleration_m_s2, car)
     
     total_power = solar_power + regen_power
@@ -108,7 +108,7 @@ def calc_net_power(speed_m_s: float, acceleration_m_s2: float, car: object, env:
         speed_m_s=speed_m_s,
         acceleration_m_s2=acceleration_m_s2, # Simple steady-state sim
         car=car,
-        env=env
+        env=env,
     )
 
     # power supply (W)
@@ -116,7 +116,7 @@ def calc_net_power(speed_m_s: float, acceleration_m_s2: float, car: object, env:
         speed_m_s=speed_m_s,
         acceleration_m_s2=acceleration_m_s2,  # Simple steady-state sim
         car=car,
-        env=env
+        env=env,
     )
 
     # Positive net_power = Charging (Supply > Demand)

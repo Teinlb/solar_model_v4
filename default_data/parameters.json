@@ -192,7 +192,19 @@
         "type": "string"
       },
       "ui": {
-        "widget": "hidden"
+        "label": "Profile type",
+        "widget": "dropdown",
+        "options": [
+          {
+            "value": "cycle",
+            "label": "Cycle profile"
+          },
+          {
+            "value": "constant",
+            "label": "Constant profile"
+          }
+        ],
+        "info": "Select the type of driving profile to use"
       }
     },
     "target_speed": {
@@ -201,7 +213,9 @@
         "type": "string"
       },
       "ui": {
-        "widget": "hidden"
+        "label": "Target speed (m/s)",
+        "widget": "input",
+        "info": "Constant speed for constant profile"
       }
     },
     "ref": {
@@ -210,7 +224,15 @@
         "type": "string"
       },
       "ui": {
-        "widget": "hidden"
+        "label": "Drive cycle reference",
+        "widget": "dropdown",
+        "options": [
+          {
+            "value": "drivecycles/WLTP.csv",
+            "label": "WLTP"
+          }
+        ],
+        "info": "Path to the drive cycle CSV file"
       }
     }
   },

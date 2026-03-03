@@ -7,20 +7,25 @@ export default function SimulationForm({ config, presets, onSubmit }) {
     // defined in the configuration.  This makes it easy to "reset" simply by
     // clearing the object, and avoids the need to rebuild the default object
     // from the config every time.
-    const [formData, setFormData] = useState({ car: {}, env: {}, sim: {} });
+    const [formData, setFormData] = useState({
+        car: {},
+        profile: {},
+        env: {},
+        sim: {},
+    });
     const [loading, setLoading] = useState(false);
     const [selectedPresets, setSelectedPresets] = useState({
         vehicle: null,
+        profile: null,
         environment: null,
-        drivecycle: null,
     });
 
     const resetForm = () => {
-        setFormData({ car: {}, env: {}, sim: {} });
+        setFormData({ car: {}, profile: {}, env: {}, sim: {} });
         setSelectedPresets({
             vehicle: null,
+            profile: null,
             environment: null,
-            drivecycle: null,
         });
     };
 
@@ -33,23 +38,16 @@ export default function SimulationForm({ config, presets, onSubmit }) {
         // Map category names to section names in formData
         const sectionMap = {
             vehicle: "car",
+            profile: "profile",
             environment: "env",
-            drivecycle: "sim",
         };
 
         const section = sectionMap[category] || category;
 
-        if (category === "drivecycle") {
-            setFormData((prev) => ({
-                ...prev,
-                drivecycle: presetId,
-            }));
-        } else {
-            setFormData((prev) => ({
-                ...prev,
-                [section]: { ...prev[section], ...preset.values },
-            }));
-        }
+        setFormData((prev) => ({
+            ...prev,
+            [section]: { ...prev[section], ...preset.values },
+        }));
     };
 
     const handleParameterChange = (section, key, value) => {
@@ -57,18 +55,18 @@ export default function SimulationForm({ config, presets, onSubmit }) {
         const constraint = config[section][key]?.constraints;
         if (constraint?.read_only) return;
 
-        let numValue = value;
+        let finalValue = value;
         if (constraint?.type === "float") {
-            numValue = parseFloat(value) || 0;
+            finalValue = parseFloat(value) || 0;
             if (constraint.min !== undefined)
-                numValue = Math.max(numValue, constraint.min);
+                finalValue = Math.max(finalValue, constraint.min);
             if (constraint.max !== undefined)
-                numValue = Math.min(numValue, constraint.max);
+                finalValue = Math.min(finalValue, constraint.max);
         }
 
         setFormData((prev) => ({
             ...prev,
-            [section]: { ...prev[section], [key]: numValue },
+            [section]: { ...prev[section], [key]: finalValue },
         }));
     };
 
@@ -107,7 +105,7 @@ export default function SimulationForm({ config, presets, onSubmit }) {
                         <ParameterSection
                             title="Speed Profile"
                             section="profile"
-                            config={{}}
+                            config={config.profile}
                             formData={formData.profile}
                             onChange={handleParameterChange}
                             presets={presets?.profile}

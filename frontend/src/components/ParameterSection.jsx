@@ -15,7 +15,6 @@ export default function ParameterSection({
             frontal_area: "frontal_area",
             drag_coeff: "drag_coeff",
             rolling_res: "rolling_res",
-            target_speed: "target_speed",
             battery_capacity: "battery_capacity",
             battery_efficiency: "battery_efficiency",
             available_capacity: "available_capacity",
@@ -26,6 +25,9 @@ export default function ParameterSection({
             panel_area: "panel_area",
             panel_efficiency: "panel_efficiency",
             panel_temp_coeff: "panel_temp_coeff",
+            type: "type",
+            target_speed: "target_speed",
+            ref: "ref",
             air_density: "air_density",
             gravity: "gravity",
             temperature: "temperature",
@@ -143,6 +145,35 @@ export default function ParameterSection({
                                             : value}
                                     </span>
                                 </div>
+                            ) : widgetType === "dropdown" ? (
+                                <select
+                                    id={`${section}-${key}`}
+                                    value={value}
+                                    onChange={(e) =>
+                                        onChange(section, key, e.target.value)
+                                    }
+                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                >
+                                    <option value="">-- Select --</option>
+                                    {meta.ui?.options?.map((option) => (
+                                        <option
+                                            key={option.value}
+                                            value={option.value}
+                                        >
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            ) : meta.constraints?.type === "string" ? (
+                                <input
+                                    id={`${section}-${key}`}
+                                    type="text"
+                                    value={value}
+                                    onChange={(e) =>
+                                        onChange(section, key, e.target.value)
+                                    }
+                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                />
                             ) : (
                                 <input
                                     id={`${section}-${key}`}

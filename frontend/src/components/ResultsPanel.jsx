@@ -15,12 +15,8 @@ export default function ResultsPanel({ results }) {
             value: `${(final.energy / 1e6).toFixed(2)} MJ`,
         },
         {
-            label: "Avg Power Demand",
-            value: `${(final.power_demand / 1000).toFixed(2)} kW`,
-        },
-        {
-            label: "Avg Power Supply",
-            value: `${(final.power_supply / 1000).toFixed(2)} kW`,
+            label: "Average Net Power",
+            value: `${(history[0].energy / final.time / 1000).toFixed(2)} kW`,
         },
     ];
 
