@@ -81,7 +81,7 @@ export default function ResultsPanel({ results }) {
                 <>
                     <div className="bg-white border border-slate-200 rounded-lg p-4">
                         <h3 className="text-sm font-semibold text-slate-900 mb-4">
-                            Energy Over Time
+                            Energy Over Time (MJ)
                         </h3>
                         <SimpleChart
                             labels={chartData.labels}
@@ -92,7 +92,7 @@ export default function ResultsPanel({ results }) {
 
                     <div className="bg-white border border-slate-200 rounded-lg p-4">
                         <h3 className="text-sm font-semibold text-slate-900 mb-4">
-                            Power Over Time
+                            Power Over Time (kW)
                         </h3>
                         <SimpleChart
                             labels={chartData.labels}
@@ -104,7 +104,7 @@ export default function ResultsPanel({ results }) {
 
                     <div className="bg-white border border-slate-200 rounded-lg p-4">
                         <h3 className="text-sm font-semibold text-slate-900 mb-4">
-                            Distance Over Time
+                            Distance Over Time (m)
                         </h3>
                         <SimpleChart
                             labels={chartData.labels}
@@ -115,7 +115,7 @@ export default function ResultsPanel({ results }) {
 
                     <div className="bg-white border border-slate-200 rounded-lg p-4">
                         <h3 className="text-sm font-semibold text-slate-900 mb-4">
-                            Velocity Over Time
+                            Velocity Over Time (m/s)
                         </h3>
                         <SimpleChart
                             labels={chartData.labels}
