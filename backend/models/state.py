@@ -7,5 +7,4 @@ class SimState:
     velocity: float = 0.0
     acceleration: float = 0.0
     energy: float = 0.0
-    last_power_demand: float = 0.0
-    last_power_supply: float = 0.0
+    power: float = 0.0

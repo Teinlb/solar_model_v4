@@ -22,12 +22,12 @@ def calc_rolling_resistance_power(speed_m_s: float, car: object, env: object) ->
     return car.rolling_res * car.mass * env.gravity * speed_m_s
 
 
-def calc_slope_power(speed_m_s: float, slope_rad: float, car: object, env: object) -> float:
+def calc_slope_power(speed_m_s: float, car: object, env: object) -> float:
     """
     Calculate power (W) to climb a slope.
     P = m * g * v * sin(slope)
     """
-    return car.mass * env.gravity * speed_m_s * math.sin(slope_rad)
+    return car.mass * env.gravity * speed_m_s * math.sin(env.slope)
 
 
 def calc_acceleration_power(speed_m_s: float, acceleration_m_s2: float, car: object) -> float:
@@ -40,7 +40,6 @@ def calc_acceleration_power(speed_m_s: float, acceleration_m_s2: float, car: obj
 
 def calc_power_demand(
     speed_m_s: float, 
-    slope_rad: float, 
     acceleration_m_s2: float,
     car: object, 
     env: object
@@ -53,7 +52,7 @@ def calc_power_demand(
     
     p_air = calc_air_drag_power(speed_m_s, car, env)
     p_roll = calc_rolling_resistance_power(speed_m_s, car, env)
-    p_slope = calc_slope_power(speed_m_s, slope_rad, car, env)
+    p_slope = calc_slope_power(speed_m_s, car, env)
     p_accel = calc_acceleration_power(speed_m_s, acceleration_m_s2, car)
 
     # Mechanical power needed (only positive acceleration consumes power)
@@ -101,3 +100,25 @@ def calc_power_supply(irradiance_w_m2: float, speed_m_s: float, acceleration_m_s
     
     total_power = solar_power + regen_power
     return total_power * car.battery_efficiency
+
+
+def calc_net_power(speed_m_s: float, acceleration_m_s2: float, car: object, env: object) -> float:
+    # power demand (W)
+    power_out = calc_power_demand(
+        speed_m_s=speed_m_s,
+        acceleration_m_s2=acceleration_m_s2, # Simple steady-state sim
+        car=car,
+        env=env
+    )
+
+    # power supply (W)
+    power_in = calc_power_supply(
+        speed_m_s=speed_m_s,
+        acceleration_m_s2=acceleration_m_s2,  # Simple steady-state sim
+        car=car,
+        env=env
+    )
+
+    # Positive net_power = Charging (Supply > Demand)
+    # Negative net_power = Discharging (Demand > Supply)
+    return power_in - power_out
