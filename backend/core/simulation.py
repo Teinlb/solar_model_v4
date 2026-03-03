@@ -75,7 +75,6 @@ class Simulation:
         """
 
         cycle = load_drive_cycle(self.cfg.profile.ref)
-        print(cycle[:5])  # Print first 5 entries for verification
 
         max_time = min(self.cfg.sim.duration, len(cycle) - 1)
         battery_capacity = self.cfg.car.battery_capacity
@@ -100,17 +99,18 @@ class Simulation:
             # Battery State Logic
             current_energy = self.state.energy
             # Check if battery is already full
-            if net_power > 0 and current_energy >= battery_capacity:
+            if net_power > 0 and current_energy + net_power >= battery_capacity:
                 # Battery full: Excess solar energy is wasted / dumped
                 actual_power_change = 0.0
             else:
                 # Battery accepts charge or discharge as normal
                 actual_power_change = net_power
 
-            # Update physical state variables based on time step (dt)
+            # Update physical state variables
             self.state.energy += actual_power_change
             self.state.distance += self.state.velocity
             self.state.time += 1
+            self.state.power = net_power
 
             # Record state snapshot
             self.history.append(copy.copy(self.state))

@@ -5,6 +5,8 @@ export default function ResultsPanel({ results }) {
     const final = results.final_state || {};
     const history = results.history || [];
 
+    console.log(history);
+
     // Calculate average net power from initial and final states
     const duration = final.time || 1;
     const energyDelta = (initial.energy || 0) - (final.energy || 0);
@@ -30,12 +32,26 @@ export default function ResultsPanel({ results }) {
         // Need at least 2 points for meaningful charts
         if (!history || history.length < 2) return null;
         const step = Math.max(1, Math.floor(history.length / 100));
-        const sampled = history.filter((_, i) => i % step === 0);
+
+        // Precompute instantaneous power (kW) from energy differences
+        const powerFull = history.map((h, i) => {
+            if (i === 0) return 0;
+            const dt = h.time - history[i - 1].time || 1;
+            const dE = (history[i - 1].energy || 0) - (h.energy || 0);
+            return dE / dt / 1000; // convert W -> kW
+        });
+
+        // Sample indices so all series stay aligned
+        const sampledIdxs = history
+            .map((_, i) => i)
+            .filter((i) => i % step === 0);
+
         return {
-            labels: sampled.map((h) => (h.time / 3600).toFixed(1)),
-            distance: sampled.map((h) => h.distance / 1000),
-            energy: sampled.map((h) => h.energy / 1e6),
-            velocity: sampled.map((h) => h.velocity),
+            labels: sampledIdxs.map((i) => (history[i].time / 3600).toFixed(1)),
+            distance: sampledIdxs.map((i) => history[i].distance / 1000),
+            energy: sampledIdxs.map((i) => history[i].energy / 1e6),
+            velocity: sampledIdxs.map((i) => history[i].velocity),
+            power: sampledIdxs.map((i) => powerFull[i]),
         };
     };
 
@@ -65,17 +81,6 @@ export default function ResultsPanel({ results }) {
                 <>
                     <div className="bg-white border border-slate-200 rounded-lg p-4">
                         <h3 className="text-sm font-semibold text-slate-900 mb-4">
-                            Distance Over Time
-                        </h3>
-                        <SimpleChart
-                            labels={chartData.labels}
-                            values={chartData.distance}
-                            color="#3b82f6"
-                        />
-                    </div>
-
-                    <div className="bg-white border border-slate-200 rounded-lg p-4">
-                        <h3 className="text-sm font-semibold text-slate-900 mb-4">
                             Energy Over Time
                         </h3>
                         <SimpleChart
@@ -87,12 +92,36 @@ export default function ResultsPanel({ results }) {
 
                     <div className="bg-white border border-slate-200 rounded-lg p-4">
                         <h3 className="text-sm font-semibold text-slate-900 mb-4">
+                            Power Over Time
+                        </h3>
+                        <SimpleChart
+                            labels={chartData.labels}
+                            values={chartData.power}
+                            color="#8b5cf6"
+                            zeroLine={true}
+                        />
+                    </div>
+
+                    <div className="bg-white border border-slate-200 rounded-lg p-4">
+                        <h3 className="text-sm font-semibold text-slate-900 mb-4">
+                            Distance Over Time
+                        </h3>
+                        <SimpleChart
+                            labels={chartData.labels}
+                            values={chartData.distance}
+                            color="#3b82f6"
+                        />
+                    </div>
+
+                    <div className="bg-white border border-slate-200 rounded-lg p-4">
+                        <h3 className="text-sm font-semibold text-slate-900 mb-4">
                             Velocity Over Time
                         </h3>
                         <SimpleChart
                             labels={chartData.labels}
                             values={chartData.velocity}
                             color="#f59e0b"
+                            zeroLine={true}
                         />
                     </div>
                 </>
@@ -169,12 +198,22 @@ export default function ResultsPanel({ results }) {
 }
 
 // Lightweight ASCII-style chart
-function SimpleChart({ labels, values, color }) {
+function SimpleChart({
+    labels,
+    values,
+    color,
+    zeroLine = false,
+    zeroLabel = false,
+}) {
     if (!labels || !values || values.length === 0) return null;
 
     const max = Math.max(...values);
     const min = Math.min(...values);
     const range = max - min || 1;
+
+    // Determine if zero is inside the visible range and compute its Y
+    const showZero = zeroLine && min <= 0 && max >= 0;
+    const zeroY = showZero ? 80 - ((0 - min) / range) * 60 : null;
 
     return (
         <svg
@@ -193,6 +232,26 @@ function SimpleChart({ labels, values, color }) {
                     strokeWidth="0.5"
                 />
             ))}
+
+            {/* Zero line (useful to distinguish positive/negative values) */}
+            {showZero && (
+                <>
+                    <line
+                        x1="20"
+                        y1={zeroY}
+                        x2={Math.max(200, labels.length * 4)}
+                        y2={zeroY}
+                        stroke="#9ca3af"
+                        strokeWidth="1"
+                        strokeDasharray="4 4"
+                    />
+                    {zeroLabel && (
+                        <text x="5" y={zeroY + 3} fontSize="8" fill="#666">
+                            0
+                        </text>
+                    )}
+                </>
+            )}
 
             {/* Line */}
             <polyline
